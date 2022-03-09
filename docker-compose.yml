@@ -1,0 +1,43 @@
+version: "3.7"
+
+services:
+  mongodb:
+    image: mongo
+    container_name: ${PROJECT_NAME}_mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - /mount-database/mongo/${PROJECT_NAME}:/data/db
+    ports:
+      - ${DB_PORT}:27017
+    networks:
+      - project_network
+    restart: always
+
+  redis:
+    image: redis
+    container_name: ${PROJECT_NAME}_redis
+    ports:
+      - "${REDIS_PORT}:6379"
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    networks:
+      - project_network
+    restart: always
+
+  # server:
+  #   depends_on:
+  #     - mongodb
+  #     - redis
+  #   image: ais/hrm:0.0.1
+  #   env_file:
+  #     - .env
+  #   ports:
+  #     - '${SERVER_PORT}:${SERVER_PORT}'
+  #   networks:
+  #     - project_network
+  #   restart: always
+
+networks:
+  project_network:
+    name: ${PROJECT_NAME}_network
