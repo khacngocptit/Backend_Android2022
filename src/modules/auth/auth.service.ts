@@ -45,7 +45,6 @@ export class AuthService {
         const payload: JwtPayload = {
             sub: {
                 userId: user._id,
-                authorizationVersion: user.authorizationVersion.version,
                 platform: ClientPlatform.WEB,
             },
             jti: new mongo.ObjectId().toHexString(),
@@ -58,7 +57,6 @@ export class AuthService {
         const payload: JwtPayload = {
             sub: {
                 userId: user._id,
-                authorizationVersion: user.authorizationVersion.version,
                 platform: ClientPlatform.MOBILE,
                 deviceId: loginInfo.deviceId,
             },

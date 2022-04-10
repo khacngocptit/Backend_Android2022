@@ -114,7 +114,6 @@ export class UserService implements OnModuleInit {
         const payload: JwtPayload = {
             sub: {
                 userId: user._id,
-                authorizationVersion: user.authorizationVersion.version + 1,
                 platform: user.clientPlatform,
             },
             jti: new mongo.ObjectId().toHexString(),

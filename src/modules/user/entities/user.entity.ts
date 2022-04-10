@@ -7,9 +7,6 @@ import { Document } from "mongoose";
 import { Profile, ProfileSchema } from "../../profile/entities/profile.entity";
 import { DB_PROFILE, DB_USER } from "../../repository/db-collection";
 import { getExtendedSystemRoles, SystemRole } from "../common/user.constant";
-import { AuthorizationVersion, AuthorizationVersionSchema } from "./authorization-version.entity";
-import { EmailVerify, EmailVerifySchema } from "./email-verify.entity";
-import { PasswordReset, PasswordResetSchema } from "./password-reset.entity";
 
 @Schema({
     collection: DB_USER,
@@ -37,20 +34,20 @@ export class User {
     @Prop({ trim: true, lowercase: true })
     email: string;
 
-    @ValidateNested()
-    @Type(() => AuthorizationVersion)
-    @Prop(raw({ type: AuthorizationVersionSchema, default: () => ({}) }))
-    authorizationVersion: AuthorizationVersion;
+    // @ValidateNested()
+    // @Type(() => AuthorizationVersion)
+    // @Prop(raw({ type: AuthorizationVersionSchema, default: () => ({}) }))
+    // authorizationVersion: AuthorizationVersion;
 
-    @ValidateNested()
-    @Type(() => PasswordReset)
-    @Prop(raw(PasswordResetSchema))
-    passwordReset?: PasswordReset;
+    // @ValidateNested()
+    // @Type(() => PasswordReset)
+    // @Prop(raw(PasswordResetSchema))
+    // passwordReset?: PasswordReset;
 
-    @ValidateNested()
-    @Type(() => EmailVerify)
-    @Prop(raw(EmailVerifySchema))
-    emailVerify?: EmailVerify;
+    // @ValidateNested()
+    // @Type(() => EmailVerify)
+    // @Prop(raw(EmailVerifySchema))
+    // emailVerify?: EmailVerify;
 
     @IsEnum(SystemRole)
     @Prop({ type: String, enum: Object.values(SystemRole), required: true })

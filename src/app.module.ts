@@ -14,6 +14,8 @@ import { OneSignalModule } from "./modules/one-signal/one-signal.module";
 import { RepositoryModule } from "./modules/repository/repository.module";
 import { SettingModule } from "./modules/setting/setting.module";
 import { UserModule } from "./modules/user/user.module";
+import { CuaHangModule } from './modules/cua-hang/cua-hang.module';
+import { SanPhamModule } from './modules/san-pham/san-pham.module';
 
 @Module({
     imports: [
@@ -35,6 +37,8 @@ import { UserModule } from "./modules/user/user.module";
         DeviceDataModule,
         NotificationModule,
         OneSignalModule,
+        CuaHangModule,
+        SanPhamModule,
     ],
     providers: [
         {
