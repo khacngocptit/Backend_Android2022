@@ -4,12 +4,11 @@ module.exports = {
         project: "tsconfig.json",
         sourceType: "module",
     },
-    plugins: ["@typescript-eslint", "prettier"],
+    plugins: ["@typescript-eslint/eslint-plugin"],
     extends: [
-        "eslint:recommended",
-        "plugin:@typescript-eslint/eslint-recommended",
         "plugin:@typescript-eslint/recommended",
-        "prettier",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
+        "prettier/@typescript-eslint",
     ],
     root: true,
     env: {
@@ -25,18 +24,15 @@ module.exports = {
         "object-curly-spacing": "off",
         "@typescript-eslint/object-curly-spacing": ["error", "always"],
         "keyword-spacing": "off",
-        "@typescript-eslint/keyword-spacing": ["error", { after: true }],
-        semi: "off",
+        "@typescript-eslint/keyword-spacing": ["error", { "after": true }],
+        "semi": "off",
         "space-infix-ops": "off",
-        "@typescript-eslint/space-infix-ops": ["error", { int32Hint: false }],
+        "@typescript-eslint/space-infix-ops": ["error", { "int32Hint": false }],
         "@typescript-eslint/semi": ["error"],
-        quotes: "off",
-        "@typescript-eslint/typedef": [
-            "error",
-            {
-                parameter: true,
-            },
-        ],
+        "quotes": "off",
+        "@typescript-eslint/typedef": ["error", {
+            "parameter": true
+        }],
         "@typescript-eslint/quotes": ["error", "double"],
         "@typescript-eslint/no-floating-promises": "off",
         "@typescript-eslint/no-unsafe-call": "off",
@@ -49,12 +45,9 @@ module.exports = {
         "@typescript-eslint/no-unsafe-member-access": "off",
         "object-curly-spacing": "off",
         "@typescript-eslint/object-curly-spacing": ["error", "always"],
-        eqeqeq: ["error", "always"],
+        "eqeqeq": ["error", "always"],
         "no-trailing-spaces": "error",
-        "no-multiple-empty-lines": ["error", { max: 1 }],
-        "max-classes-per-file": "error",
-        "quote-props": ["error", "as-needed"],
-        "object-shorthand": ["error", "properties"],
-        "prettier/prettier": 2,
+        "no-multiple-empty-lines": ["error", { "max": 1 }],
+        "max-classes-per-file": "error"
     },
 };

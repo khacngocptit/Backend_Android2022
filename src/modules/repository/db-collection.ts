@@ -8,3 +8,5 @@ export const DB_NOTIFICATION = "Notification";
 export const DB_NOTIFY_READ = "NotifyRead";
 export const DB_JOIN_TOPIC = "JoinTopic";
 export const DB_TOPIC = "Topic";
+export const DB_CUA_HANG = "CuaHang";
+export const DB_SAN_PHAM = "SanPham";
