@@ -42,6 +42,11 @@ export class User {
     hoTen: string;
 
     @Prop()
+    hoDem: string;
+
+    @Prop()
+    ten: string;
+    @Prop()
     soDienThoai: string;
 
 }

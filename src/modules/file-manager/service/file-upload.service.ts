@@ -22,7 +22,7 @@ export class FileUploadService {
         private readonly fileManagerModel: Model<FileManagerDocument>,
 
         private readonly configService: ConfigService,
-    ) {}
+    ) { }
 
     private getFileUrl(fileId: string): string {
         const serverAddress = this.configService.get<string>("server.address");
@@ -42,8 +42,8 @@ export class FileUploadService {
             author: {
                 username: user.username,
                 email: user.email,
-                firstname: user.profile?.firstname,
-                lastname: user.profile?.lastname,
+                firstname: user.hoDem,
+                lastname: user.ten,
             },
         };
         const file = await this.fileManagerModel.create(fileDoc);
@@ -65,8 +65,8 @@ export class FileUploadService {
                 author: {
                     username: user.username,
                     email: user.email,
-                    firstname: user.profile?.firstname,
-                    lastname: user.profile?.lastname,
+                    firstname: user.hoDem,
+                    lastname: user.ten,
                 },
             };
             Object.assign(fileDoc, { _id: new ObjectId() });

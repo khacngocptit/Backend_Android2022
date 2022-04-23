@@ -30,7 +30,7 @@ export class UserService implements OnModuleInit {
         private readonly userAbilityFactory: UserAbilityFactory,
         private readonly jwtService: JwtService,
         private readonly configService: ConfigService,
-    ) {}
+    ) { }
 
     async onModuleInit() {
         await this.initAdmin();
@@ -43,14 +43,8 @@ export class UserService implements OnModuleInit {
             await this.userModel.create({
                 username: "admin",
                 password: this.configService.get<string>("project.defaultAdminPassword"),
-                systemRole: SystemRole.ADMIN,
                 email: "administrator@project.com",
-                profile: {
-                    firstname: "Admin",
-                    lastname: "Manager",
-                    dateOfBirth: new Date(),
-                    gender: Gender.MALE,
-                },
+                hoTen: "Admin",
             } as User);
         } else {
             this.logger.verbose("Administrator initialized");

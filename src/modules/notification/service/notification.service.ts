@@ -37,7 +37,7 @@ export class NotificationService implements OnModuleInit {
         private readonly notifRepo: NotificationRepository,
         private readonly settingService: SettingService,
         private readonly oneSignalService: OneSignalService,
-    ) {}
+    ) { }
 
     async onModuleInit() {
         const initStatus = (await this.settingService.getSettingValue<InitTopicStatus>(SettingKey.INIT_TOPIC_STATUS)) || {};
@@ -81,7 +81,7 @@ export class NotificationService implements OnModuleInit {
         const id = v4();
         const notifDto: Notification = {
             _id: id,
-            senderName: `${sender.profile?.lastname} ${sender.profile?.firstname}`,
+            senderName: `${sender.hoTen}`,
             senderId: String(sender._id),
             notifType: NotificationType.TAT_CA,
             ...dto,
@@ -105,7 +105,7 @@ export class NotificationService implements OnModuleInit {
         const id = v4();
         const notifDto: Notification = {
             _id: id,
-            senderName: `${sender.profile?.lastname} ${sender.profile?.firstname}`,
+            senderName: `${sender.hoTen}`,
             senderId: String(sender._id),
             notifType: NotificationType.TAI_KHOAN,
             ...dto,
@@ -129,7 +129,7 @@ export class NotificationService implements OnModuleInit {
         const id = v4();
         const notifDto: Notification = {
             _id: id,
-            senderName: `${sender.profile?.lastname} ${sender.profile?.firstname}`,
+            senderName: `${sender.hoTen}`,
             senderId: String(sender._id),
             notifType: NotificationType.VAI_TRO,
             ...dto,
@@ -153,7 +153,6 @@ export class NotificationService implements OnModuleInit {
             },
             {
                 notifType: NotificationType.VAI_TRO,
-                roles: u.systemRole,
             },
         ];
         return { $or };
