@@ -14,8 +14,10 @@ import { OneSignalModule } from "./modules/one-signal/one-signal.module";
 import { RepositoryModule } from "./modules/repository/repository.module";
 import { SettingModule } from "./modules/setting/setting.module";
 import { UserModule } from "./modules/user/user.module";
-import { CuaHangModule } from './modules/cua-hang/cua-hang.module';
-import { SanPhamModule } from './modules/san-pham/san-pham.module';
+import { CuaHangModule } from "./modules/cua-hang/cua-hang.module";
+import { SanPhamModule } from "./modules/san-pham/san-pham.module";
+import { DanhMucSanPhamModule } from "./modules/danh-muc-san-pham/danh-muc-san-pham.module";
+import { KhoSanPhamModule } from "./modules/kho-san-pham/kho-san-pham.module";
 
 @Module({
     imports: [
@@ -39,6 +41,8 @@ import { SanPhamModule } from './modules/san-pham/san-pham.module';
         OneSignalModule,
         CuaHangModule,
         SanPhamModule,
+        DanhMucSanPhamModule,
+        KhoSanPhamModule,
     ],
     providers: [
         {
@@ -51,4 +55,4 @@ import { SanPhamModule } from './modules/san-pham/san-pham.module';
         },
     ],
 })
-export class AppModule {}
+export class AppModule { }

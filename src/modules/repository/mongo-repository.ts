@@ -4,7 +4,7 @@ import { FetchQueryOption } from "../../common/pipe/fetch-query-option.interface
 import { ObjectUtil } from "../../util/object.util";
 
 export abstract class MongoRepository<T extends Document> {
-    constructor(private readonly model: Model<T>) {}
+    constructor(private readonly model: Model<T>) { }
 
     count(condition?: Record<string, unknown>): Query<number> {
         if (ObjectUtil.isEmptyObject(condition) && !this.model.baseModelName) {
@@ -14,7 +14,7 @@ export abstract class MongoRepository<T extends Document> {
         }
     }
 
-    get(condition: Record<string, unknown>): DocumentQuery<T[], T> {
+    get(condition: any): DocumentQuery<T[], T> {
         return this.model.find(condition);
     }
 

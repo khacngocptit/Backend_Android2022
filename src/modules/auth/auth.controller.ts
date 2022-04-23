@@ -16,7 +16,7 @@ import { LocalAuthGuard } from "./guard/local-auth.guard";
 @Controller("auth")
 @ApiTags("auth")
 export class AuthController {
-    constructor(private readonly authService: AuthService) {}
+    constructor(private readonly authService: AuthService) { }
 
     @UseGuards(LocalAuthGuard)
     @ApiBody({ type: LoginRequestDto })

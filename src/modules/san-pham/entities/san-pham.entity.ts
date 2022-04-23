@@ -8,34 +8,38 @@ import { IsNumber, IsOptional, IsString } from "class-validator";
 })
 
 export class SanPham {
-
-    @IsString()
-    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: DB_CUA_HANG })
-    cuaHangId: string;
-
     @IsString()
     @Prop()
-    tenSanPham: string;
+    name: string;
 
     @Prop()
-    maSanPham: string;
+    codeProduct: string;
 
     @IsString({ each: true })
     @Prop(raw([String]))
-    anhSanPham: string[];
+    images: string[];
 
     @IsString()
     @IsOptional()
     @Prop()
-    moTa?: string;
+    description?: string;
 
-    @IsNumber()
     @Prop()
-    soLuongSanPham: string;
+    price: number;
 
-    @IsNumber()
     @Prop()
-    giaTien: string;
+    discount: number;
+
+    @Prop()
+    isHot: boolean;
+
+    @IsString({ each: true })
+    @Prop(raw([String]))
+    listCategoryId: string[];
+
+    @IsString()
+    @Prop()
+    storeId: string;
 }
 
 export const SanPhamSchema = SchemaFactory.createForClass(SanPham);

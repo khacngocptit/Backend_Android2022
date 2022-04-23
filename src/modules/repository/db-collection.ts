@@ -10,3 +10,6 @@ export const DB_JOIN_TOPIC = "JoinTopic";
 export const DB_TOPIC = "Topic";
 export const DB_CUA_HANG = "CuaHang";
 export const DB_SAN_PHAM = "SanPham";
+export const DB_DANH_MUC_SAN_PHAM = "DanhMucSanPham";
+export const DB_LICH_SU_KHO_HANG = "LichSuKhoHang";
+export const DB_KHO_SAN_PHAM = "KhoSanPham";

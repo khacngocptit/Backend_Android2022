@@ -34,30 +34,16 @@ export class User {
     @Prop({ trim: true, lowercase: true })
     email: string;
 
-    // @ValidateNested()
-    // @Type(() => AuthorizationVersion)
-    // @Prop(raw({ type: AuthorizationVersionSchema, default: () => ({}) }))
-    // authorizationVersion: AuthorizationVersion;
+    // @IsEnum(SystemRole)
+    // @Prop({ type: String, enum: Object.values(SystemRole), required: true })
+    // systemRole: SystemRole;
 
-    // @ValidateNested()
-    // @Type(() => PasswordReset)
-    // @Prop(raw(PasswordResetSchema))
-    // passwordReset?: PasswordReset;
+    @Prop()
+    hoTen: string;
 
-    // @ValidateNested()
-    // @Type(() => EmailVerify)
-    // @Prop(raw(EmailVerifySchema))
-    // emailVerify?: EmailVerify;
+    @Prop()
+    soDienThoai: string;
 
-    @IsEnum(SystemRole)
-    @Prop({ type: String, enum: Object.values(SystemRole), required: true })
-    systemRole: SystemRole;
-
-    @ValidateNested()
-    @Type(() => Profile)
-    @IsOptional()
-    @Prop(raw({ type: ProfileSchema }))
-    profile: Profile;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
@@ -83,23 +69,16 @@ UserSchema.methods.comparePassword = function comparePassword(password: string):
     return bcrypt.compare(password, this.get("password"));
 };
 
-UserSchema.methods.hasSystemRole = function hasSystemRole(role: SystemRole): boolean {
-    const userRole: SystemRole = (this as Document).get("systemRole");
-    const extendedRoles = getExtendedSystemRoles(userRole);
-    if (extendedRoles.includes(role)) {
-        return true;
-    }
-    return false;
-};
+// UserSchema.methods.hasSystemRole = function hasSystemRole(role: SystemRole): boolean {
+//     const userRole: SystemRole = (this as Document).get("systemRole");
+//     const extendedRoles = getExtendedSystemRoles(userRole);
+//     if (extendedRoles.includes(role)) {
+//         return true;
+//     }
+//     return false;
+// };
 
 export interface UserDocument extends User, AccessibleFieldsDocument {
     comparePassword: (password: string) => Promise<boolean>;
     hasSystemRole: (role: SystemRole) => boolean;
 }
-
-// UserSchema.virtual("profile", {
-//     ref: DB_PROFILE,
-//     localField: "username",
-//     foreignField: "username",
-//     justOne: true,
-// });
