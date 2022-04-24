@@ -34,15 +34,15 @@ export class CuaHangController {
 
     @Get("user/:userId")
     async getStoreUser(
-        @Param() userId: string,
+        @Param("userId") userId: string,
     ) {
-        const data = await this.cuaHangService.get({ userId: userId });
+        const data = await this.cuaHangService.get({ userId: userId }).populate("userId");
         return ResponseDto.create(data);
     }
 
     @Get("user/:userId/child")
     async getStoreChildUser(
-        @Param() userId: string,
+        @Param("userId") userId: string,
     ) {
         const data = await this.cuaHangService.get({ isRoot: { $ne: true }, userId });
         return ResponseDto.create(data);
