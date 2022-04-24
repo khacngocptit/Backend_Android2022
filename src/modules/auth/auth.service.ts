@@ -10,7 +10,7 @@ import { OneSignalClient } from "../one-signal/one-signal";
 import { ONE_SIGNAL_CLIENT } from "../one-signal/one-signal-client";
 import { DB_DEVICE_DATA, DB_USER } from "../repository/db-collection";
 import { UserAuthorizedDocument } from "../user/dto/user-authorized.dto";
-import { UserDocument } from "../user/entities/user.entity";
+import { User, UserDocument } from "../user/entities/user.entity";
 import { AuthErrorCode } from "./common/auth.constant";
 import { JwtPayload } from "./dto/jwt-payload";
 import { LoginMobileRequestDto } from "./dto/login-mobile-request.dto";
@@ -41,7 +41,7 @@ export class AuthService {
         }
     }
 
-    async loginWeb(user: UserDocument): Promise<any> {
+    async loginWeb(user: UserDocument): Promise<User> {
         const payload: JwtPayload = {
             sub: {
                 userId: user._id,

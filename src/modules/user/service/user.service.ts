@@ -94,7 +94,7 @@ export class UserService implements OnModuleInit {
         return this.userModel.accessibleBy(this.userAbilityFactory.createForUser(user), "delete").findOneAndRemove({ _id: id });
     }
 
-    async changePassword(user: UserAuthorizedDocument, changePassword: ChangePasswordDto): Promise<LoginResultDto> {
+    async changePassword(user: UserAuthorizedDocument, changePassword: ChangePasswordDto): Promise<User> {
         const correctOldPassword = await user.comparePassword(changePassword.oldPassword);
         if (!correctOldPassword) {
             throw ErrorData.BadRequest(UserErrorCode.BAD_REQUEST_WRONG_OLD_PASSWORD);
@@ -112,7 +112,7 @@ export class UserService implements OnModuleInit {
             },
             jti: new mongo.ObjectId().toHexString(),
         };
-        return { user, accessToken: this.jwtService.sign(payload) };
+        return user;
     }
 
     async testRemove(user: UserDocument) {
