@@ -49,11 +49,6 @@ export interface Configuration {
         appId: string;
         apiKey: string;
     };
-    redis: {
-        host: string;
-        port: number;
-        password: string;
-    };
 }
 
 export default (): Configuration => {
@@ -102,11 +97,6 @@ export default (): Configuration => {
     };
 
     // REDIS
-    const redis = {
-        host: getEnv("REDIS_HOST"),
-        port: Number(getEnv("REDIS_PORT")),
-        password: getEnv("REDIS_PASSWORD"),
-    };
 
     // MINIO
     const minioEndpoint = getEnv("MINIO_ENDPOINT");
@@ -137,6 +127,5 @@ export default (): Configuration => {
         },
         aws,
         oneSignal,
-        redis,
     };
 };
