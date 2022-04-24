@@ -25,7 +25,7 @@ export class AuthController {
         { errorCode: AuthErrorCode.UNAUTHORIZED_USERNAME_NOT_FOUND, errorDescription: "Không tìm thấy username" },
         { errorCode: AuthErrorCode.UNAUTHORIZED_WRONG_PASSWORD, errorDescription: "Sai mật khẩu" },
     )
-    async loginWeb(@ReqUser() user: UserDocument): Promise<LoginResultResponseDto> {
+    async loginWeb(@ReqUser() user: UserDocument): Promise<any> {
         const data = await this.authService.loginWeb(user);
         return ResponseDto.create(data);
     }
@@ -40,7 +40,7 @@ export class AuthController {
     async loginMobile(
         @ReqUser() user: UserDocument,
         @Body() loginInfo: LoginMobileRequestDto,
-    ): Promise<LoginResultResponseDto> {
+    ): Promise<any> {
         const data = await this.authService.loginMobile(user, loginInfo);
         return ResponseDto.create(data);
     }

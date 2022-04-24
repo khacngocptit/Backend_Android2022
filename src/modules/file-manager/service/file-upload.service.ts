@@ -42,8 +42,8 @@ export class FileUploadService {
             author: {
                 username: user.username,
                 email: user.email,
-                firstname: user.hoDem,
-                lastname: user.ten,
+                firstname: user.firstname,
+                lastname: user.lastname,
             },
         };
         const file = await this.fileManagerModel.create(fileDoc);
@@ -65,8 +65,8 @@ export class FileUploadService {
                 author: {
                     username: user.username,
                     email: user.email,
-                    firstname: user.hoDem,
-                    lastname: user.ten,
+                    firstname: user.firstname,
+                    lastname: user.lastname,
                 },
             };
             Object.assign(fileDoc, { _id: new ObjectId() });

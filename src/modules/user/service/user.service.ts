@@ -44,7 +44,7 @@ export class UserService implements OnModuleInit {
                 username: "admin",
                 password: this.configService.get<string>("project.defaultAdminPassword"),
                 email: "administrator@project.com",
-                hoTen: "Admin",
+                fullname: "Admin",
             } as User);
         } else {
             this.logger.verbose("Administrator initialized");

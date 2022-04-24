@@ -26,9 +26,9 @@ export class AuthService {
         private readonly oneSignalClient: OneSignalClient,
 
         private readonly jwtService: JwtService,
-    ) {}
+    ) { }
 
-    async validateUser(username: string, password: string): Promise<UserDocument> {
+    async validateUser(username: string, password: string) {
         const user = await this.userModel.findOne({ username: username.toLowerCase() });
         if (user) {
             const matchPassword = await user.comparePassword(password);
@@ -41,7 +41,7 @@ export class AuthService {
         }
     }
 
-    async loginWeb(user: UserDocument): Promise<LoginResultDto> {
+    async loginWeb(user: UserDocument): Promise<any> {
         const payload: JwtPayload = {
             sub: {
                 userId: user._id,
@@ -49,10 +49,10 @@ export class AuthService {
             },
             jti: new mongo.ObjectId().toHexString(),
         };
-        return { user, accessToken: this.jwtService.sign(payload) };
+        return user;
     }
 
-    async loginMobile(user: UserDocument, loginInfo: LoginMobileRequestDto): Promise<LoginResultDto> {
+    async loginMobile(user: UserDocument, loginInfo: LoginMobileRequestDto) {
         const jti = uuid.v4();
         const payload: JwtPayload = {
             sub: {
@@ -84,7 +84,7 @@ export class AuthService {
                     }
                 });
         }
-        return { user, accessToken: this.jwtService.sign(payload) };
+        return user;
     }
 
     async logoutMobile(user: UserAuthorizedDocument): Promise<void> {

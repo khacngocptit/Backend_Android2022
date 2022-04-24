@@ -81,7 +81,7 @@ export class NotificationService implements OnModuleInit {
         const id = v4();
         const notifDto: Notification = {
             _id: id,
-            senderName: `${sender.hoTen}`,
+            senderName: `${sender.fullname}`,
             senderId: String(sender._id),
             notifType: NotificationType.TAT_CA,
             ...dto,
@@ -105,7 +105,7 @@ export class NotificationService implements OnModuleInit {
         const id = v4();
         const notifDto: Notification = {
             _id: id,
-            senderName: `${sender.hoTen}`,
+            senderName: `${sender.fullname}`,
             senderId: String(sender._id),
             notifType: NotificationType.TAI_KHOAN,
             ...dto,
@@ -129,7 +129,7 @@ export class NotificationService implements OnModuleInit {
         const id = v4();
         const notifDto: Notification = {
             _id: id,
-            senderName: `${sender.hoTen}`,
+            senderName: `${sender.fullname}`,
             senderId: String(sender._id),
             notifType: NotificationType.VAI_TRO,
             ...dto,

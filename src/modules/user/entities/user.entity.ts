@@ -34,20 +34,16 @@ export class User {
     @Prop({ trim: true, lowercase: true })
     email: string;
 
-    // @IsEnum(SystemRole)
-    // @Prop({ type: String, enum: Object.values(SystemRole), required: true })
-    // systemRole: SystemRole;
+    @Prop()
+    fullname: string;
 
     @Prop()
-    hoTen: string;
+    firstname: string;
 
     @Prop()
-    hoDem: string;
-
+    lastname: string;
     @Prop()
-    ten: string;
-    @Prop()
-    soDienThoai: string;
+    phonenumber: string;
 
 }
 
