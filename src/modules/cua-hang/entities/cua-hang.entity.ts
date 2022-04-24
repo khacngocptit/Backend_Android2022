@@ -29,9 +29,6 @@ export class CuaHang {
 
     @Prop()
     isRoot: boolean;
-
-    @Prop()
-    userId: string;
 }
 export const CuaHangSchema = SchemaFactory.createForClass(CuaHang);
 

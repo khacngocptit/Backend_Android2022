@@ -1,13 +1,10 @@
 import { AccessibleFieldsDocument } from "@casl/mongoose";
-import { Prop, raw, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import * as bcrypt from "bcryptjs";
-import { Type } from "class-transformer";
-import { IsEmail, IsEnum, IsOptional, IsString, ValidateNested } from "class-validator";
-import { Document } from "mongoose";
-import { Profile, ProfileSchema } from "../../profile/entities/profile.entity";
-import { DB_PROFILE, DB_USER } from "../../repository/db-collection";
-import { getExtendedSystemRoles, SystemRole } from "../common/user.constant";
-
+import { IsEmail, IsString } from "class-validator";
+import { DB_CUA_HANG, DB_USER } from "../../repository/db-collection";
+import { SystemRole } from "../common/user.constant";
+import * as mongoose from "mongoose";
 @Schema({
     collection: DB_USER,
     timestamps: true,
@@ -42,8 +39,12 @@ export class User {
 
     @Prop()
     lastname: string;
+
     @Prop()
     phonenumber: string;
+
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: DB_CUA_HANG })
+    storeId: string;
 
 }
 
