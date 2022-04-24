@@ -40,6 +40,14 @@ export class CuaHangController {
         return ResponseDto.create(data);
     }
 
+    @Get("user/:userId/child")
+    async getStoreChildUser(
+        @Param() userId: string,
+    ) {
+        const data = await this.cuaHangService.get({ isRoot: { $ne: true }, userId });
+        return ResponseDto.create(data);
+    }
+
     @Get(":id")
     async getByIdCuaHang(@Param("id") id: string) {
         const data = await this.cuaHangService.getOne({ _id: id });

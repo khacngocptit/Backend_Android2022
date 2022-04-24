@@ -11,9 +11,8 @@ export class CuaHang {
     @Prop()
     name: string;
 
-    @IsString()
     @Prop()
-    codeStore: string;
+    imageUrl: string;
 
     @Prop()
     phoneNumber: string;
