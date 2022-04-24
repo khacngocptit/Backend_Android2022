@@ -30,7 +30,6 @@ export class FileUploadService {
     }
 
     async createSingleFile(
-        user: UserPopulateDocument,
         fileUpload: Express.Multer.File,
         doc: SingleFileUploadDto,
     ): Promise<FileCreatedDto> {
@@ -39,12 +38,6 @@ export class FileUploadService {
             path: fileUpload.path,
             mimetype: fileUpload.mimetype,
             public: doc.public as boolean,
-            author: {
-                username: user.username,
-                email: user.email,
-                firstname: user.firstname,
-                lastname: user.lastname,
-            },
         };
         const file = await this.fileManagerModel.create(fileDoc);
         file.path = undefined;
@@ -62,12 +55,6 @@ export class FileUploadService {
                 path: file.path,
                 mimetype: file.mimetype,
                 public: doc.public as boolean,
-                author: {
-                    username: user.username,
-                    email: user.email,
-                    firstname: user.firstname,
-                    lastname: user.lastname,
-                },
             };
             Object.assign(fileDoc, { _id: new ObjectId() });
             return fileDoc;
@@ -82,7 +69,6 @@ export class FileUploadService {
     }
 
     async createSingleImageFile(
-        user: UserDocument,
         fileUpload: Express.Multer.File,
         doc: SingleFileUploadDto,
         compress: ParamOption01,
@@ -109,6 +95,6 @@ export class FileUploadService {
                 });
             });
         }
-        return this.createSingleFile(user, fileUpload, doc);
+        return this.createSingleFile(fileUpload, doc);
     }
 }

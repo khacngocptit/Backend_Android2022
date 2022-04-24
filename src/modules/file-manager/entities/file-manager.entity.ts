@@ -36,11 +36,6 @@ export class FileManager {
     path: string;
 
     url?: string;
-
-    @ValidateNested()
-    @Type(() => Author)
-    @Prop({ type: raw(AuthorSchema), required: true })
-    author: Author;
 }
 
 const FileManagerSchema = SchemaFactory.createForClass(FileManager);

@@ -33,7 +33,7 @@ export class FileDataController {
         @UploadedFile() file: Express.Multer.File,
         @Body(FileUploadTransform) doc: SingleFileUploadDto,
     ): Promise<FileCreatedResponseDto> {
-        const data = await this.fileManagerService.createSingleFile(user, file, doc);
+        const data = await this.fileManagerService.createSingleFile(file, doc);
         return ResponseDto.create(data);
     }
 

@@ -36,7 +36,7 @@ export class FileImageController {
         @Body(FileUploadTransform) doc: SingleFileUploadDto,
         @Query() query: UploadFileParams,
     ): Promise<FileCreatedResponseDto> {
-        const data = await this.fileManagerService.createSingleImageFile(user, fileUpload, doc, query.compress);
+        const data = await this.fileManagerService.createSingleImageFile(fileUpload, doc, query.compress);
         return ResponseDto.create(data);
     }
 
