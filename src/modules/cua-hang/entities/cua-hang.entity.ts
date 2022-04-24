@@ -29,6 +29,9 @@ export class CuaHang {
 
     @Prop()
     isRoot: boolean;
+
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: DB_USER })
+    userId: string;
 }
 export const CuaHangSchema = SchemaFactory.createForClass(CuaHang);
 

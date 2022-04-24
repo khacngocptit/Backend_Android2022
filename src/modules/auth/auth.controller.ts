@@ -29,4 +29,5 @@ export class AuthController {
         const data = await this.authService.loginWeb(user);
         return ResponseDto.create(data);
     }
+
 }

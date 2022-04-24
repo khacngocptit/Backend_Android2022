@@ -4,7 +4,6 @@ import * as bcrypt from "bcryptjs";
 import { IsEmail, IsString } from "class-validator";
 import { DB_CUA_HANG, DB_USER } from "../../repository/db-collection";
 import { SystemRole } from "../common/user.constant";
-import * as mongoose from "mongoose";
 @Schema({
     collection: DB_USER,
     timestamps: true,
@@ -42,10 +41,6 @@ export class User {
 
     @Prop()
     phonenumber: string;
-
-    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: DB_CUA_HANG })
-    storeId: string;
-
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
