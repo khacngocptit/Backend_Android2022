@@ -39,24 +39,18 @@ export class CuaHangController {
     }
 
     @Post()
-    @Authorization()
-    @AllowSystemRoles(SystemRole.ADMIN)
     async create(@Body() body: CreateCuaHangDto) {
         const data = await this.cuaHangService.create(body);
         return ResponseDto.create(data);
     }
 
     @Put(":id")
-    @Authorization()
-    @AllowSystemRoles(SystemRole.ADMIN)
     async update(@Param("id") id: string, @Body() body: CreateCuaHangDto) {
         const data = await this.cuaHangService.updateById(id, body, { new: true });
         return ResponseDto.create(data);
     }
 
     @Delete(":id")
-    @Authorization()
-    @AllowSystemRoles(SystemRole.ADMIN)
     async delete(@Param("id") id: string) {
         const data = await this.cuaHangService.deleteById(id);
         return ResponseDto.create(data);

@@ -45,16 +45,12 @@ export class SanPhamController {
     }
 
     @Post()
-    @Authorization()
-    @AllowSystemRoles(SystemRole.ADMIN, SystemRole.USER)
     async create(@Body() body: CreateSanPham) {
         const data = await this.sanPhamService.create(body);
         return ResponseDto.create(data);
     }
 
     @Put(":id")
-    @Authorization()
-    @AllowSystemRoles(SystemRole.ADMIN, SystemRole.USER)
     async update(
         @Param("id") id: string,
         @Body() update: CreateSanPham,
@@ -64,8 +60,6 @@ export class SanPhamController {
     }
 
     @Delete(":id")
-    @Authorization()
-    @AllowSystemRoles(SystemRole.ADMIN, SystemRole.USER)
     async delete(
         @Param("id") id: string
     ) {
