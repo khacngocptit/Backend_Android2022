@@ -25,19 +25,17 @@ import { UserService } from "../service/user.service";
 
 @Controller("user")
 @ApiTags("user")
-@Authorization()
 export class UserController {
-    constructor(private readonly userService: UserService) {}
+    constructor(private readonly userService: UserService) { }
 
     @Post()
-    @AllowSystemRoles(SystemRole.ADMIN)
     async create(@Body() createUserDto: CreateUserDto): Promise<UserResponseDto> {
         const data = await this.userService.create(createUserDto);
         return ResponseDto.create(data);
     }
 
+
     @Get("pageable")
-    @AllowSystemRoles(SystemRole.ADMIN)
     @ApiCondition()
     @ApiPageableQuery()
     async findPageable(
@@ -64,7 +62,7 @@ export class UserController {
     }
 
     @Put(":id")
-    @AllowSystemRoles(SystemRole.ADMIN)
+
     async updateById(
         @ReqUser() user: UserDocument,
         @Param("id") id: string,
@@ -94,7 +92,6 @@ export class UserController {
     }
 
     @Delete(":id")
-    @AllowSystemRoles(SystemRole.ADMIN)
     async deleteById(@ReqUser() user: UserDocument, @Param("id") id: string): Promise<UserResponseDto> {
         const data = await this.userService.userDeleteById(user, id);
         return ResponseDto.create(data);

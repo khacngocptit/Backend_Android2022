@@ -16,9 +16,8 @@ import { FileUploadService } from "../service/file-upload.service";
 
 @Controller("file/document")
 @ApiTags("file-document")
-@Authorization()
 export class FileDocumentController {
-    constructor(private readonly fileManagerService: FileUploadService) {}
+    constructor(private readonly fileManagerService: FileUploadService) { }
 
     @Post("single")
     @ApiBadRequestDoc({

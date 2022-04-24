@@ -17,9 +17,8 @@ import { MultipleFileUploadDto } from "../dto/multiple-file-upload.dto";
 
 @Controller("file/image")
 @ApiTags("file-image")
-@Authorization()
 export class FileImageController {
-    constructor(private readonly fileManagerService: FileUploadService) {}
+    constructor(private readonly fileManagerService: FileUploadService) { }
 
     @Post("single")
     @ApiBadRequestDoc({

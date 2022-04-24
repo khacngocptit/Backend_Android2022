@@ -14,7 +14,9 @@ import { User, UserDocument } from "../user/entities/user.entity";
 import { AuthErrorCode } from "./common/auth.constant";
 import { JwtPayload } from "./dto/jwt-payload";
 import { LoginMobileRequestDto } from "./dto/login-mobile-request.dto";
+import { LoginRequestDto } from "./dto/login-request.dto";
 import { LoginResultDto } from "./dto/login-result.dto";
+import * as bcrypt from "bcryptjs";
 @Injectable()
 export class AuthService {
     constructor(
@@ -41,15 +43,13 @@ export class AuthService {
         }
     }
 
-    async loginWeb(user: UserDocument): Promise<User> {
-        const payload: JwtPayload = {
-            sub: {
-                userId: user._id,
-                platform: ClientPlatform.WEB,
-            },
-            jti: new mongo.ObjectId().toHexString(),
-        };
-        return user;
+    async loginWeb(user: LoginRequestDto): Promise<User> {
+        const u = await this.userModel.findOne({ username: user.username });
+        const isMatch = await bcrypt.compare(user.password, u.password);
+        if (isMatch) {
+            return u;
+        }
+        return null;
     }
 
     async loginMobile(user: UserDocument, loginInfo: LoginMobileRequestDto) {

@@ -25,30 +25,8 @@ export class AuthController {
         { errorCode: AuthErrorCode.UNAUTHORIZED_USERNAME_NOT_FOUND, errorDescription: "Không tìm thấy username" },
         { errorCode: AuthErrorCode.UNAUTHORIZED_WRONG_PASSWORD, errorDescription: "Sai mật khẩu" },
     )
-    async loginWeb(@ReqUser() user: UserDocument): Promise<LoginResultResponseDto> {
+    async loginWeb(@Body() user: LoginRequestDto): Promise<LoginResultResponseDto> {
         const data = await this.authService.loginWeb(user);
-        return ResponseDto.create(data);
-    }
-
-    @UseGuards(LocalAuthGuard)
-    @ApiBody({ type: LoginMobileRequestDto })
-    @Post("login/mobile")
-    @ApiUnauthorizedDoc(
-        { errorCode: AuthErrorCode.UNAUTHORIZED_USERNAME_NOT_FOUND, errorDescription: "Không tìm thấy username" },
-        { errorCode: AuthErrorCode.UNAUTHORIZED_WRONG_PASSWORD, errorDescription: "Sai mật khẩu" },
-    )
-    async loginMobile(
-        @ReqUser() user: UserDocument,
-        @Body() loginInfo: LoginMobileRequestDto,
-    ): Promise<any> {
-        const data = await this.authService.loginMobile(user, loginInfo);
-        return ResponseDto.create(data);
-    }
-
-    @Authorization()
-    @Post("logout/mobile")
-    async logoutMobile(@ReqUser() user: UserAuthorizedDocument): Promise<ResponseDto> {
-        const data = await this.authService.logoutMobile(user);
         return ResponseDto.create(data);
     }
 }
