@@ -10,9 +10,9 @@ export class MongooseConfigService implements MongooseOptionsFactory {
         const dbPort = this.configService.get<number>("database.port");
         const dbName = this.configService.get<string>("database.name");
         return {
-            uri: "mongodb+srv://chatApp:<chatApp123>@cluster0.asmuw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
-            // user: this.configService.get("database.username"),
-            // pass: this.configService.get("database.password"),
+            uri: `mongodb://${dbHost}:${dbPort}/${dbName}?authSource=admin`,
+            user: this.configService.get("database.username"),
+            pass: this.configService.get("database.password"),
             useUnifiedTopology: true,
             useNewUrlParser: true,
             useFindAndModify: false,
