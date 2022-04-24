@@ -43,11 +43,5 @@ module.exports = {
         "comma-dangle": "off",
         "@typescript-eslint/comma-dangle": ["error", "always-multiline"],
         "@typescript-eslint/no-unsafe-member-access": "off",
-        "object-curly-spacing": "off",
-        "@typescript-eslint/object-curly-spacing": ["error", "always"],
-        "eqeqeq": ["error", "always"],
-        "no-trailing-spaces": "error",
-        "no-multiple-empty-lines": ["error", { "max": 1 }],
-        "max-classes-per-file": "error"
     },
 };
