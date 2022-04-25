@@ -36,7 +36,7 @@ export class CuaHangController {
     async getStoreUser(
         @Param("userId") userId: string,
     ) {
-        const data = await this.cuaHangService.get({ userId: userId }).populate("userId", "fullname phonenumber email username");
+        const data = await this.cuaHangService.get({ userId: userId });
         return ResponseDto.create(data);
     }
 
