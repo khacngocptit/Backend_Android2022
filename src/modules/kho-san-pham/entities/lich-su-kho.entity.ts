@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { DB_LICH_SU_KHO_HANG, DB_SAN_PHAM } from "src/modules/repository/db-collection";
 import * as mongoose from "mongoose";
-import { IsBoolean, IsNumber, IsOptional, IsString } from "class-validator";
+import { IsBoolean, IsDateString, IsNumber, IsOptional, IsString } from "class-validator";
 import { stringList } from "aws-sdk/clients/datapipeline";
 
 @Schema({
@@ -18,15 +18,15 @@ export class LichSuKhoHang {
     @Prop({ required: true })
     quality: string;
 
-    @IsString()
+    @IsNumber()
     @Prop({ required: true })
-    price: string;
+    price: number;
 
     @IsString()
     @Prop()
     storeId: string;
 
-    @IsNumber()
+    @IsDateString()
     @Prop()
     date: string;
 

@@ -1,4 +1,45 @@
-import { Controller } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Res } from "@nestjs/common";
+import { ApiTags } from "@nestjs/swagger";
+import { ResponseDto } from "src/common/dto/response/response.dto";
+import { NhapKhoDto } from "./dto/nhap-kho.dto";
+import { PhanKhoDto } from "./dto/phan-kho.dto";
+import { KhoSanPhamService } from "./kho-san-pham.service";
 
-@Controller('kho-san-pham')
-export class KhoSanPhamController {}
+@Controller("kho-san-pham")
+@ApiTags("kho-san-pham")
+export class KhoSanPhamController {
+    constructor(
+        private readonly khoSanPhamService: KhoSanPhamService
+    ) { }
+
+    @Get("all")
+    async getAllKhoSanPham() {
+        const data = await this.khoSanPhamService.get({});
+        return ResponseDto.create(data);
+    }
+
+    @Get(":id")
+    async getByIdKhoSanPham(@Param("id") id: string) {
+        const data = await this.khoSanPhamService.getOne({ _id: id });
+        return ResponseDto.create(data);
+    }
+
+    @Post("nhap-kho")
+    async nhapKhoSanPham(@Body() body: NhapKhoDto) {
+        const data = await this.khoSanPhamService.nhapKho(body);
+        return ResponseDto.create(data);
+    }
+
+    @Post("phan-kho/:storeId")
+    async phanKhoSanPham(@Param("storeId") storeId: string, @Body() body: PhanKhoDto) {
+
+        const data = await this.khoSanPhamService.phanKhoCuaHang(storeId, body);
+        return ResponseDto.create(data);
+    }
+
+    @Post("xuat-kho")
+    async xuatKhoSanPham(@Body() body: NhapKhoDto) {
+        const data = await this.khoSanPhamService.xuatKho(body);
+        return ResponseDto.create(data);
+    }
+}
