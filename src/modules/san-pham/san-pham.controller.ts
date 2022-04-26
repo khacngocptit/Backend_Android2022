@@ -34,13 +34,14 @@ export class SanPhamController {
     }
 
     @Get(":id")
-    @ApiQuery({ name: "cond", required: false })
-    async findById(@Param("id") id: string, @Query("cond") cond: any) {
-        const condition: any = (cond && JSON.parse(cond)) || {};
-        Object.assign(condition, {
-            _id: id,
-        });
-        const data = await this.sanPhamService.getOne(condition);
+    async findById(@Param("id") id: string) {
+        const data = await this.sanPhamService.getOne({ _id: id });
+        return ResponseDto.create(data);
+    }
+
+    @Get("cua-hang/:storeId")
+    async findProductOfStore(@Param("storeId") id: string) {
+        const data = await this.sanPhamService.get({ storeId: id });
         return ResponseDto.create(data);
     }
 

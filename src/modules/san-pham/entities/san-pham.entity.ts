@@ -15,9 +15,9 @@ export class SanPham {
     @Prop()
     codeProduct: string;
 
-    @IsString({ each: true })
-    @Prop(raw([String]))
-    images: string[];
+    @IsString()
+    @Prop()
+    images: string;
 
     @IsString()
     @IsOptional()
