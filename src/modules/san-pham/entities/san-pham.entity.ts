@@ -38,7 +38,7 @@ export class SanPham {
     listCategoryId: string[];
 
     @IsString()
-    @Prop()
+    @Prop({ type: mongoose.Schema.Types.ObjectId })
     storeId: string;
 }
 

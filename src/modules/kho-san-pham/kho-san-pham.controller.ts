@@ -24,6 +24,11 @@ export class KhoSanPhamController {
         return ResponseDto.create(data);
     }
 
+    /**
+     * Thống kê theo cửa hàng: Các 30 ngày trước
+     * Thống kê chuỗi cửa hang: Doanh thu của từng cửa hàng trong tháng
+     */
+
     @Post("nhap-kho")
     async nhapKhoSanPham(@Body() body: NhapKhoDto) {
         const data = await this.khoSanPhamService.nhapKho(body);

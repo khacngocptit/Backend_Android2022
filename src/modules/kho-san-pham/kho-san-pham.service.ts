@@ -120,7 +120,6 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
         if (!khoSanPham) {
             throw ErrorDataDto.BadRequest("Không đủ sản phẩm trong kho");
         }
-
         return khoSanPham;
     }
 }
