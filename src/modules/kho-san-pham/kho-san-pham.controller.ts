@@ -47,4 +47,17 @@ export class KhoSanPhamController {
         const data = await this.khoSanPhamService.xuatKho(body);
         return ResponseDto.create(data);
     }
+
+    @Get("doanh-thu/chuoi-cua-hang/:userId/thang/:thang/nam/:nam")
+    async doanhThuThang(@Param("userId") userId: string, @Param("thang") thang: string, @Param("nam") nam: string) {
+        const data = await this.khoSanPhamService.doanhThu(userId, +thang, +nam);
+        return ResponseDto.create(data);
+    }
+
+    @Get("doanh-thu/cua-hang/cua-hang/:storeId/thang/:thang/nam/:nam")
+    async doanhThuThangCuaHang(@Param("storeId") storeId: string, @Param("thang") thang: string, @Param("nam") nam: string) {
+        const data = await this.khoSanPhamService.doanhThuNgayTrongThangStore(storeId, +thang, +nam);
+        return ResponseDto.create(data);
+    }
+
 }

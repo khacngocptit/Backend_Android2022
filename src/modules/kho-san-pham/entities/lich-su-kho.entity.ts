@@ -28,7 +28,19 @@ export class LichSuKhoHang {
 
     @IsDateString()
     @Prop()
-    date: string;
+    date: Date;
+
+    @IsNumber()
+    @Prop()
+    day: number;
+
+    @IsNumber()
+    @Prop()
+    month: number;
+
+    @IsNumber()
+    @Prop()
+    year: number;
 
     @IsNumber()
     @IsOptional()

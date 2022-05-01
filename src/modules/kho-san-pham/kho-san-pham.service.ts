@@ -9,6 +9,8 @@ import { NhapKhoDto } from "./dto/nhap-kho.dto";
 import { PhanKhoDto } from "./dto/phan-kho.dto";
 import { KhoSanPham, KhoSanPhamDocument } from "./entities/kho-san-pham.entity";
 import { LichSuKhoHangDocument } from "./entities/lich-su-kho.entity";
+import * as bluebird from "bluebird";
+import moment from "moment";
 
 @Injectable()
 export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
@@ -18,7 +20,7 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
         @InjectModel(DB_LICH_SU_KHO_HANG)
         private readonly lichSuKhoHangModel: Model<LichSuKhoHangDocument>,
         @InjectModel(DB_CUA_HANG)
-        private readonly cuaHangModel: Model<CuaHangDocument>
+        private readonly cuaHangModel: Model<CuaHangDocument>,
     ) {
         super(khoSanPhamModel);
     }
@@ -28,12 +30,34 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
     ) {
         const data = new this.lichSuKhoHangModel(body);
         data.isExport = false;
-        const nhapKho = await data.save();
+        data.day = moment(data.date).date();
+        data.month = moment(data.date).month();
+        data.year = moment(data.date).year();
+        const { quality, ...update } = data;
+        const nhapKho = await this.lichSuKhoHangModel.findOneAndUpdate(
+            {
+                isExport: false,
+                storeId: data.storeId,
+                day: moment(data.date).date(),
+                month: moment(data.date).month(),
+                year: moment(data.date).year(),
+                productId: data.productId,
+            },
+            {
+                $inc: {
+                    quality: quality,
+                },
+                $set: update,
+            },
+            {
+                upsert: true,
+            }
+        );
         const isRoot = await this.cuaHangModel.exists({ isRoot: true, _id: nhapKho.storeId });
         if (!isRoot) {
             throw ErrorDataDto.BadRequest("NOT_ROOT");
         }
-        await this.khoSanPhamModel.findOneAndUpdate(
+        const kho = await this.khoSanPhamModel.findOneAndUpdate(
             {
                 productId: nhapKho.productId,
                 storeId: nhapKho.storeId,
@@ -52,7 +76,7 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
                 upsert: true,
             }
         );
-        return nhapKho;
+        return kho;
     }
 
     async phanKhoCuaHang(
@@ -101,7 +125,29 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
     ) {
         const xuatKho = new this.lichSuKhoHangModel(body);
         xuatKho.isExport = true;
-        xuatKho.save();
+        xuatKho.day = moment(body.date).date();
+        xuatKho.month = moment(body.date).month();
+        xuatKho.year = moment(body.date).year();
+        const { quality, ...update } = xuatKho;
+        await this.lichSuKhoHangModel.findOneAndUpdate(
+            {
+                isExport: true,
+                storeId: body.storeId,
+                day: moment(body.date).date(),
+                month: moment(body.date).month(),
+                year: moment(body.date).year(),
+                productId: body.productId,
+            },
+            {
+                $inc: {
+                    quality,
+                },
+                $set: update,
+            },
+            {
+                upsert: true,
+            }
+        );
         const khoSanPham = await this.khoSanPhamModel.findOneAndUpdate(
             {
                 productId: xuatKho.productId,
@@ -121,5 +167,52 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
             throw ErrorDataDto.BadRequest("Không đủ sản phẩm trong kho");
         }
         return khoSanPham;
+    }
+
+    async doanhThu(userId: string, thang: number, nam: number) {
+        const listStore = await this.cuaHangModel.find({ userId });
+        const listStoreId = listStore.map(el => el._id.toString());
+        const doanhThu = await this.lichSuKhoHangModel.aggregate([
+            {
+                $match: {
+                    storeId: { $in: listStoreId },
+                    year: nam,
+                    month: thang,
+                    isExport: true,
+                },
+            },
+            {
+                $group: {
+                    _id: { $storeId: "$storeId" },
+                    total: {
+                        $sum: { $multiply: ["$quality", "$price"] },
+                    },
+                },
+            },
+        ]);
+        return doanhThu;
+    }
+
+    async doanhThuNgayTrongThangStore(storeId: string, thang: number, nam: number) {
+        const data = await this.lichSuKhoHangModel.aggregate([
+            {
+                $match: {
+                    storeId,
+                    month: thang,
+                    year: nam,
+                    isExport: true,
+                },
+            },
+            {
+                _id: { storeId: "$storeId", date: "$date" },
+                date: { $first: "$date" },
+                total: {
+                    $sum: {
+                        $multiply: ["$quality", "$price"],
+                    },
+                },
+            },
+        ]);
+        return data;
     }
 }
