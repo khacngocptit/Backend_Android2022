@@ -193,7 +193,9 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
         return doanhThu;
     }
 
-    async doanhThuNgayTrongThangStore(storeId: string, thang: number, nam: number) {
+    async doanhThuNgayTrongThangStore(storeId: string) {
+        const thang = moment().month();
+        const nam = moment().year();
         const data = await this.lichSuKhoHangModel.aggregate([
             {
                 $match: {
@@ -214,5 +216,86 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
             },
         ]);
         return data;
+    }
+
+    async doanhThuChuoiCuaHang(storeId: string) {
+        const thang = moment().month();
+        const nam = moment().year();
+        const cuaHangCha = await this.cuaHangModel.findOne({ _id: storeId, isRoot: true });
+        if (!cuaHangCha) {
+            throw ErrorDataDto.BadRequest("NOT_IS_ROOT");
+        }
+
+        const listStore: string[] = await this.cuaHangModel.find({ userId: cuaHangCha.userId }).then(el => {
+            return el.map(t => t._id.toString());
+        });
+
+        const xuatKho = await this.lichSuKhoHangModel.aggregate([
+            {
+                $match: {
+                    isExport: true,
+                    storeId: { $in: listStore },
+                    month: thang,
+                    year: nam,
+                },
+            },
+            {
+                $group: {
+                    _id: { day: "$day", date: "$date" },
+                    day: { $first: "$day" },
+                    date: { $date: "$date" },
+                    total: {
+                        $sum: {
+                            $multiply: ["$quality", "$price"],
+                        },
+                    },
+                },
+            },
+        ]);
+
+        const nhapKho = await this.lichSuKhoHangModel.aggregate([
+            {
+                $match: {
+                    isExport: { $ne: true },
+                    storeId: { $in: listStore },
+                    month: thang,
+                    year: nam,
+                },
+            },
+            {
+                $group: {
+                    _id: { day: "$day", date: "$date" },
+                    day: { $first: "$day" },
+                    date: { $date: "$date" },
+                    total: {
+                        $sum: {
+                            $multiply: ["$quality", "$price"],
+                        },
+                    },
+                },
+            },
+        ]);
+        const result = [];
+        for (let i = 0; i < xuatKho.length; i++) {
+            for (let j = 0; j < nhapKho.length; j++) {
+                if (xuatKho[i].day === nhapKho[j].day) {
+                    const el = {
+                        date: xuatKho[i].date,
+                        day: xuatKho[i].day,
+                        total: xuatKho[i].total - nhapKho[i].total,
+                    };
+                    result.push(el);
+                    xuatKho.splice(i, 1);
+                }
+            }
+        }
+        xuatKho.forEach(el => {
+            result.push({
+                date: el.date,
+                day: el.day,
+                total: el.total,
+            });
+        });
+        return result;
     }
 }

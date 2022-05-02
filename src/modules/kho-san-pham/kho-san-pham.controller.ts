@@ -49,15 +49,28 @@ export class KhoSanPhamController {
     }
 
     @Get("doanh-thu/chuoi-cua-hang/:userId/thang/:thang/nam/:nam")
-    async doanhThuThang(@Param("userId") userId: string, @Param("thang") thang: string, @Param("nam") nam: string) {
+    async doanhThuThang(
+        @Param("userId") userId: string,
+        @Param("thang") thang: string,
+        @Param("nam") nam: string
+    ) {
         const data = await this.khoSanPhamService.doanhThu(userId, +thang, +nam);
         return ResponseDto.create(data);
     }
 
-    @Get("doanh-thu/cua-hang/cua-hang/:storeId/thang/:thang/nam/:nam")
-    async doanhThuThangCuaHang(@Param("storeId") storeId: string, @Param("thang") thang: string, @Param("nam") nam: string) {
-        const data = await this.khoSanPhamService.doanhThuNgayTrongThangStore(storeId, +thang, +nam);
+    @Get("doanh-thu/cua-hang/:storeId/thang/:thang/nam/:nam")
+    async doanhThuThangCuaHang(
+        @Param("storeId") storeId: string
+    ) {
+        const data = await this.khoSanPhamService.doanhThuNgayTrongThangStore(storeId);
         return ResponseDto.create(data);
     }
 
+    @Get("doanh-thu/chuoi-cua-hang/:storeId")
+    async doanhThuChuoiCuaHangTheoNgay(
+        @Param("storeId") storeId: string
+    ) {
+        const data = await this.khoSanPhamService.doanhThuChuoiCuaHang(storeId);
+        return ResponseDto.create(data);
+    }
 }
