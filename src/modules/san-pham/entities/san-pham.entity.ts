@@ -28,17 +28,14 @@ export class SanPham {
     price: number;
 
     @Prop()
-    discount: number;
-
-    @Prop()
     isHot: boolean;
 
     @IsString({ each: true })
     @Prop(raw([{ type: mongoose.Schema.Types.ObjectId, ref: DB_DANH_MUC_SAN_PHAM }]))
     listCategoryId?: string[];
 
-    @IsString({ each: true })
-    @Prop(raw([{ type: mongoose.Schema.Types.ObjectId, ref: DB_CUA_HANG }]))
+    @IsString()
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: DB_CUA_HANG })
     storeId: string;
 }
 
