@@ -45,6 +45,12 @@ export class SanPhamController {
         return ResponseDto.create(data);
     }
 
+    @Get("danh-muc-san-pham/:categoryId")
+    async getProductOfCategory(@Param("categoryId") id: string) {
+        const data = await this.sanPhamService.get({ listCategoryId: id });
+        return ResponseDto.create(data);
+    }
+
     @Post()
     async create(@Body() body: CreateSanPham) {
         const data = await this.sanPhamService.create(body);
