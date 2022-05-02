@@ -53,7 +53,7 @@ export class SanPhamController {
 
     @Post()
     async create(@Body() body: CreateSanPham) {
-        const data = await this.sanPhamService.create(body);
+        const data = await this.sanPhamService.createSanPham(body);
         return ResponseDto.create(data);
     }
 
