@@ -19,7 +19,7 @@ export class KhoSanPham {
 
     @Prop()
     @IsNumber()
-    quality: number;
+    quatity: number;
 }
 
 export const KhoSanPhamSchema = SchemaFactory.createForClass(KhoSanPham);

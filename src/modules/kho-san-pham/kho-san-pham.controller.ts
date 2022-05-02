@@ -36,9 +36,8 @@ export class KhoSanPhamController {
     }
 
     @Post("phan-kho/:storeId")
-    async phanKhoSanPham(@Param("storeId") storeId: string, @Body() body: PhanKhoDto) {
-
-        const data = await this.khoSanPhamService.phanKhoCuaHang(storeId, body);
+    async phanKhoSanPham(@Param("userId") userId: string, @Body() body: PhanKhoDto) {
+        const data = await this.khoSanPhamService.phanKhoCuaHang(userId, body);
         return ResponseDto.create(data);
     }
 

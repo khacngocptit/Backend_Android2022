@@ -62,7 +62,8 @@ export class SanPhamController {
         @Param("id") id: string,
         @Body() update: CreateSanPham,
     ) {
-        const data = await this.sanPhamService.updateById(id, update, { new: true });
+        const data = await this.sanPhamService.updateSanPham(id, update);
+        // Van sua cap nhap kho => Product (thay the)
         return ResponseDto.create(data);
     }
 
@@ -70,7 +71,9 @@ export class SanPhamController {
     async delete(
         @Param("id") id: string
     ) {
-        const data = await this.sanPhamService.deleteById(id);
+        // Xoa het trong kho
+        //Xoa cua hang Xoa het cac ban ghi trong kho -> So luong san pham tra ve cua hang cha 
+        const data = await this.sanPhamService.deleteSanPham(id);
         return ResponseDto.create(data);
     }
 }

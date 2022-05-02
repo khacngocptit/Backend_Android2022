@@ -30,10 +30,6 @@ export class SanPham {
     @Prop()
     isHot: boolean;
 
-    @IsString({ each: true })
-    @Prop(raw([{ type: mongoose.Schema.Types.ObjectId, ref: DB_DANH_MUC_SAN_PHAM }]))
-    listCategoryId?: string[];
-
     @IsString()
     @Prop({ type: mongoose.Schema.Types.ObjectId, ref: DB_CUA_HANG })
     storeId: string;

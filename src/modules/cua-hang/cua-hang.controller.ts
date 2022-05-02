@@ -68,7 +68,7 @@ export class CuaHangController {
 
     @Delete(":id")
     async delete(@Param("id") id: string) {
-        const data = await this.cuaHangService.deleteById(id);
+        const data = await this.cuaHangService.deleteCuaHang(id);
         return ResponseDto.create(data);
     }
 }

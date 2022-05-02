@@ -4,5 +4,5 @@ import { SanPham } from "../entities/san-pham.entity";
 
 export class CreateSanPham extends PartialType(SanPham) {
     @IsNumber()
-    quality: number;
+    quatity: number;
 }

@@ -33,7 +33,7 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
         data.day = moment(data.date).date();
         data.month = moment(data.date).month();
         data.year = moment(data.date).year();
-        const { quality, ...update } = data;
+        const { quatity, ...update } = data;
         const nhapKho = await this.lichSuKhoHangModel.findOneAndUpdate(
             {
                 isExport: false,
@@ -45,7 +45,7 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
             },
             {
                 $inc: {
-                    quality: quality,
+                    quatity: quatity,
                 },
                 $set: update,
             },
@@ -64,7 +64,7 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
             },
             {
                 $inc: {
-                    quality: nhapKho.quality,
+                    quatity: nhapKho.quatity,
                 },
                 $set: {
                     productId: nhapKho.productId,
@@ -83,16 +83,29 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
         storeId: string,
         phanKho: PhanKhoDto
     ) {
-        const isRoot = await this.cuaHangModel.findOne({ isRoot: true, _id: storeId });
+        const isRoot = await this.cuaHangModel.findOne({ isRoot: true, userId: storeId });
         if (!isRoot) {
             throw ErrorDataDto.BadRequest("NOT_STORE_ROOT");
         }
+
+        /** 
+         * Kiem tra 
+        */
+       const khoCon = await this.khoSanPhamModel.findOne({
+           productId: phanKho.productId,
+           storeId: phanKho.storeId,
+       });
+       let diff = 0;
+       if (khoCon) {
+            diff = khoCon.quatity - phanKho.quatity;
+       }
         const xuatKhoTong = await this.khoSanPhamModel.findOneAndUpdate({
             storeId: storeId,
             productId: phanKho.productId,
+            quatity: { $gte: phanKho.quatity },
         }, {
             $inc: {
-                quality: -phanKho.quality,
+                quatity: diff,
             },
         }, { new: true });
         if (!xuatKhoTong) {
@@ -104,10 +117,8 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
                 productId: phanKho.productId,
             },
             {
-                $inc: {
-                    quality: phanKho.quality,
-                },
                 $set: {
+                    quatity: phanKho.quatity,
                     storeId: phanKho.storeId,
                     productId: phanKho.productId,
                 },
@@ -128,7 +139,7 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
         xuatKho.day = moment(body.date).date();
         xuatKho.month = moment(body.date).month();
         xuatKho.year = moment(body.date).year();
-        const { quality, ...update } = xuatKho;
+        const { quatity, ...update } = xuatKho;
         await this.lichSuKhoHangModel.findOneAndUpdate(
             {
                 isExport: true,
@@ -140,7 +151,7 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
             },
             {
                 $inc: {
-                    quality,
+                    quatity,
                 },
                 $set: update,
             },
@@ -152,11 +163,11 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
             {
                 productId: xuatKho.productId,
                 storeId: xuatKho.storeId,
-                quality: { $gte: xuatKho.quality },
+                quatity: { $gte: xuatKho.quatity },
             },
             {
                 $inc: {
-                    quality: -xuatKho.quality,
+                    quatity: -xuatKho.quatity,
                 },
             },
             {
@@ -185,7 +196,7 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
                 $group: {
                     _id: { $storeId: "$storeId" },
                     total: {
-                        $sum: { $multiply: ["$quality", "$price"] },
+                        $sum: { $multiply: ["$quatity", "$price"] },
                     },
                 },
             },
@@ -210,7 +221,7 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
                 date: { $first: "$date" },
                 total: {
                     $sum: {
-                        $multiply: ["$quality", "$price"],
+                        $multiply: ["$quatity", "$price"],
                     },
                 },
             },
@@ -246,7 +257,7 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
                     date: { $date: "$date" },
                     total: {
                         $sum: {
-                            $multiply: ["$quality", "$price"],
+                            $multiply: ["$quatity", "$price"],
                         },
                     },
                 },
@@ -269,7 +280,7 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
                     date: { $date: "$date" },
                     total: {
                         $sum: {
-                            $multiply: ["$quality", "$price"],
+                            $multiply: ["$quatity", "$price"],
                         },
                     },
                 },
