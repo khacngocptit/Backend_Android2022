@@ -33,7 +33,7 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
         data.day = moment(data.date).date();
         data.month = moment(data.date).month();
         data.year = moment(data.date).year();
-        const { quatity, ...update } = data;
+        const { quantity, ...update } = data;
         const nhapKho = await this.lichSuKhoHangModel.findOneAndUpdate(
             {
                 isExport: false,
@@ -45,7 +45,7 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
             },
             {
                 $inc: {
-                    quatity: quatity,
+                    quantity: quantity,
                 },
                 $set: update,
             },
@@ -64,7 +64,7 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
             },
             {
                 $inc: {
-                    quatity: nhapKho.quatity,
+                    quantity: nhapKho.quantity,
                 },
                 $set: {
                     productId: nhapKho.productId,
@@ -91,21 +91,21 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
         /** 
          * Kiem tra 
         */
-       const khoCon = await this.khoSanPhamModel.findOne({
-           productId: phanKho.productId,
-           storeId: phanKho.storeId,
-       });
-       let diff = 0;
-       if (khoCon) {
-            diff = khoCon.quatity - phanKho.quatity;
-       }
+        const khoCon = await this.khoSanPhamModel.findOne({
+            productId: phanKho.productId,
+            storeId: phanKho.storeId,
+        });
+        let diff = 0;
+        if (khoCon) {
+            diff = khoCon.quantity - phanKho.quantity;
+        }
         const xuatKhoTong = await this.khoSanPhamModel.findOneAndUpdate({
             storeId: storeId,
             productId: phanKho.productId,
-            quatity: { $gte: phanKho.quatity },
+            quantity: { $gte: phanKho.quantity },
         }, {
             $inc: {
-                quatity: diff,
+                quantity: diff,
             },
         }, { new: true });
         if (!xuatKhoTong) {
@@ -118,7 +118,7 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
             },
             {
                 $set: {
-                    quatity: phanKho.quatity,
+                    quantity: phanKho.quantity,
                     storeId: phanKho.storeId,
                     productId: phanKho.productId,
                 },
@@ -139,7 +139,7 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
         xuatKho.day = moment(body.date).date();
         xuatKho.month = moment(body.date).month();
         xuatKho.year = moment(body.date).year();
-        const { quatity, ...update } = xuatKho;
+        const { quantity, ...update } = xuatKho;
         await this.lichSuKhoHangModel.findOneAndUpdate(
             {
                 isExport: true,
@@ -151,7 +151,7 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
             },
             {
                 $inc: {
-                    quatity,
+                    quantity,
                 },
                 $set: update,
             },
@@ -163,11 +163,11 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
             {
                 productId: xuatKho.productId,
                 storeId: xuatKho.storeId,
-                quatity: { $gte: xuatKho.quatity },
+                quantity: { $gte: xuatKho.quantity },
             },
             {
                 $inc: {
-                    quatity: -xuatKho.quatity,
+                    quantity: -xuatKho.quantity,
                 },
             },
             {
@@ -196,12 +196,22 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
                 $group: {
                     _id: { $storeId: "$storeId" },
                     total: {
-                        $sum: { $multiply: ["$quatity", "$price"] },
+                        $sum: { $multiply: ["$quantity", "$price"] },
                     },
+                    storeId: { $first: "$storeId" },
                 },
             },
         ]);
-        return doanhThu;
+        const label = [];
+        const value = [];
+        doanhThu.forEach(el => {
+            label.push(el.storeId);
+            value.push(el.total);
+        });
+        return {
+            label,
+            value,
+        };
     }
 
     async doanhThuNgayTrongThangStore(storeId: string) {
@@ -221,7 +231,7 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
                 date: { $first: "$date" },
                 total: {
                     $sum: {
-                        $multiply: ["$quatity", "$price"],
+                        $multiply: ["$quantity", "$price"],
                     },
                 },
             },
@@ -257,7 +267,7 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
                     date: { $date: "$date" },
                     total: {
                         $sum: {
-                            $multiply: ["$quatity", "$price"],
+                            $multiply: ["$quantity", "$price"],
                         },
                     },
                 },
@@ -280,7 +290,7 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
                     date: { $date: "$date" },
                     total: {
                         $sum: {
-                            $multiply: ["$quatity", "$price"],
+                            $multiply: ["$quantity", "$price"],
                         },
                     },
                 },
@@ -307,6 +317,12 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
                 total: el.total,
             });
         });
-        return result;
+        const label = [];
+        const total = [];
+        result.forEach(el => {
+            label.push(el.date);
+            total.push(el.total);
+        });
+        return { label, total };
     }
 }

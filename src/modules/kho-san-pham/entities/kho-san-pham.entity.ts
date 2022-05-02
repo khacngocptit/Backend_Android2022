@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { DB_KHO_SAN_PHAM } from "src/modules/repository/db-collection";
+import { DB_CUA_HANG, DB_KHO_SAN_PHAM, DB_SAN_PHAM } from "src/modules/repository/db-collection";
 import * as mongoose from "mongoose";
 import { IsNumber, IsString } from "class-validator";
 
@@ -10,16 +10,16 @@ import { IsNumber, IsString } from "class-validator";
 
 export class KhoSanPham {
     @IsString()
-    @Prop({ type: mongoose.Schema.Types.ObjectId })
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: DB_SAN_PHAM })
     productId: string;
 
     @IsString()
-    @Prop({ type: mongoose.Schema.Types.ObjectId })
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: DB_SAN_PHAM })
     storeId: string;
 
     @Prop()
     @IsNumber()
-    quatity: number;
+    quantity: number;
 }
 
 export const KhoSanPhamSchema = SchemaFactory.createForClass(KhoSanPham);

@@ -16,8 +16,8 @@ export class SanPhamController {
     @Get("all")
     @ApiQuery({ name: "cond", required: false })
     async findAllSanPham(@Query("cond") cond: any) {
-        const condition: any = (cond && JSON.parse(cond)) || cond;
-        const data = await this.sanPhamService.get(condition);
+        const condition: any = (cond && JSON.parse(cond)) || {};
+        const data = await this.sanPhamService.getSanPham(condition);
         return ResponseDto.create(data);
     }
 
@@ -39,9 +39,15 @@ export class SanPhamController {
         return ResponseDto.create(data);
     }
 
+    @Get("cua-hang/user/:userId")
+    async findProductOfUser(@Param("userId") id: string) {
+        const data = await this.sanPhamService.getSanPhamTheoUser(id);
+        return ResponseDto.create(data);
+    }
+
     @Get("cua-hang/:storeId")
     async findProductOfStore(@Param("storeId") id: string) {
-        const data = await this.sanPhamService.get({ storeId: id });
+        const data = await this.sanPhamService.getSanPhamTheoCuaHang(id);
         return ResponseDto.create(data);
     }
 

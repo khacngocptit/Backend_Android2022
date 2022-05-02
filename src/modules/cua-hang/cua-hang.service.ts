@@ -26,19 +26,19 @@ export class CuaHangService extends MongoRepository<CuaHangDocument> {
         super(cuaHangModel);
     }
     async deleteCuaHang(id: string) {
-        const data = await this.cuaHangModel.findOneAndDelete({_id:id});
+        const data = await this.cuaHangModel.findOneAndDelete({ _id: id });
         if (data.isRoot) {
             throw ErrorDataDto.BadRequest("KHONG_THE_XOA_CUA_HANG_ROOT");
         } else {
-            const cuaHangCha = await this.cuaHangModel.findOne({isRoot: true, userId: data.userId})
-            const sanPhamTrongKhoHang = await this.khoSanPhamModel.find({storeId: id});
-            await bluebird.map(sanPhamTrongKhoHang,async el => {
-                const sl = await this.khoSanPhamModel.findOneAndDelete({productId: el.productId, storeId: el.storeId});
+            const cuaHangCha = await this.cuaHangModel.findOne({ isRoot: true, userId: data.userId })
+            const sanPhamTrongKhoHang = await this.khoSanPhamModel.find({ storeId: id });
+            await bluebird.map(sanPhamTrongKhoHang, async el => {
+                const sl = await this.khoSanPhamModel.findOneAndDelete({ productId: el.productId, storeId: el.storeId });
                 await this.khoSanPhamModel.findOneAndUpdate({
                     productId: el.productId, storeId: cuaHangCha._id,
                 }, {
                     $inc: {
-                        quatity: sl.quatity,
+                        quantity: sl.quantity,
                     }
                 })
             })
