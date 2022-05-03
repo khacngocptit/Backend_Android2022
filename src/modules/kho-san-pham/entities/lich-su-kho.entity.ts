@@ -16,7 +16,7 @@ export class LichSuKhoHang {
 
     @IsNumber()
     @Prop({ required: true })
-    quantity: string;
+    quantity: number;
 
     @IsNumber()
     @Prop({ required: true })

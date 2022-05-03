@@ -35,7 +35,7 @@ export class KhoSanPhamController {
         return ResponseDto.create(data);
     }
 
-    @Post("phan-kho/:storeId")
+    @Post("phan-kho/:userId")
     async phanKhoSanPham(@Param("userId") userId: string, @Body() body: PhanKhoDto) {
         const data = await this.khoSanPhamService.phanKhoCuaHang(userId, body);
         return ResponseDto.create(data);
@@ -47,14 +47,12 @@ export class KhoSanPhamController {
         return ResponseDto.create(data);
     }
 
-    @Get("doanh-thu/chuoi-cua-hang/:userId/thang/:thang/nam/:nam")
+    @Get("doanh-thu/chuoi-cua-hang/user/:userId")
     async doanhThuThang(
         @Param("userId") userId: string,
-        @Param("thang") thang: string,
-        @Param("nam") nam: string
     ) {
-        const data = await this.khoSanPhamService.doanhThu(userId, +thang, +nam);
-        return ResponseDto.create(data);
+        const data = await this.khoSanPhamService.doanhThu(userId);
+        return data;
     }
 
     @Get("doanh-thu/cua-hang/:storeId/thang/:thang/nam/:nam")
@@ -62,14 +60,14 @@ export class KhoSanPhamController {
         @Param("storeId") storeId: string
     ) {
         const data = await this.khoSanPhamService.doanhThuNgayTrongThangStore(storeId);
-        return ResponseDto.create(data);
+        return data;
     }
 
-    @Get("doanh-thu/chuoi-cua-hang/:storeId")
+    @Get("doanh-thu/chuoi-cua-hang/:userId")
     async doanhThuChuoiCuaHangTheoNgay(
-        @Param("storeId") storeId: string
+        @Param("userId") storeId: string
     ) {
         const data = await this.khoSanPhamService.doanhThuChuoiCuaHang(storeId);
-        return ResponseDto.create(data);
+        return data;
     }
 }

@@ -8,9 +8,9 @@ import { MongoRepository } from "../repository/mongo-repository";
 import { NhapKhoDto } from "./dto/nhap-kho.dto";
 import { PhanKhoDto } from "./dto/phan-kho.dto";
 import { KhoSanPham, KhoSanPhamDocument } from "./entities/kho-san-pham.entity";
-import { LichSuKhoHangDocument } from "./entities/lich-su-kho.entity";
+import { LichSuKhoHang, LichSuKhoHangDocument } from "./entities/lich-su-kho.entity";
 import * as bluebird from "bluebird";
-import moment from "moment";
+import * as moment from "moment";
 
 @Injectable()
 export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
@@ -84,10 +84,6 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
         phanKho: PhanKhoDto
     ) {
         const isRoot = await this.cuaHangModel.findOne({ isRoot: true, userId: storeId });
-        if (!isRoot) {
-            throw ErrorDataDto.BadRequest("NOT_STORE_ROOT");
-        }
-
         /** 
          * Kiem tra 
         */
@@ -98,9 +94,11 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
         let diff = 0;
         if (khoCon) {
             diff = khoCon.quantity - phanKho.quantity;
+        } else {
+            diff = -phanKho.quantity;
         }
         const xuatKhoTong = await this.khoSanPhamModel.findOneAndUpdate({
-            storeId: storeId,
+            storeId: isRoot._id,
             productId: phanKho.productId,
             quantity: { $gte: phanKho.quantity },
         }, {
@@ -134,7 +132,7 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
     async xuatKho(
         body: NhapKhoDto
     ) {
-        const xuatKho = new this.lichSuKhoHangModel(body);
+        const xuatKho = body as LichSuKhoHang;
         xuatKho.isExport = true;
         xuatKho.day = moment(body.date).date();
         xuatKho.month = moment(body.date).month();
@@ -150,10 +148,12 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
                 productId: body.productId,
             },
             {
+                $set: {
+                    ...update,
+                },
                 $inc: {
                     quantity,
                 },
-                $set: update,
             },
             {
                 upsert: true,
@@ -180,7 +180,9 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
         return khoSanPham;
     }
 
-    async doanhThu(userId: string, thang: number, nam: number) {
+    async doanhThu(userId: string) {
+        const thang = moment().month();
+        const nam = moment().year();
         const listStore = await this.cuaHangModel.find({ userId });
         const listStoreId = listStore.map(el => el._id.toString());
         const doanhThu = await this.lichSuKhoHangModel.aggregate([
@@ -194,7 +196,7 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
             },
             {
                 $group: {
-                    _id: { $storeId: "$storeId" },
+                    _id: "$storeId",
                     total: {
                         $sum: { $multiply: ["$quantity", "$price"] },
                     },
@@ -204,13 +206,29 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
         ]);
         const label = [];
         const value = [];
-        doanhThu.forEach(el => {
-            label.push(el.storeId);
-            value.push(el.total);
+
+
+        listStore.forEach(s => {
+            let cuaHang = "";
+            let vl = 0;
+            doanhThu.forEach((el, index) => {
+                if (s._id.toString().localeCompare(el.storeId) === 0) {
+                    cuaHang = s.name;
+                    vl = el.total;
+                } else {
+                    cuaHang = s.name;
+                    vl = 0;
+                }
+            });
+            label.push(cuaHang);
+            value.push(vl);
         });
+
+
         return {
             label,
             value,
+            title: `Doanh thu cac cua hang trong chuoi thang ${thang + 1}`,
         };
     }
 
@@ -242,7 +260,7 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
     async doanhThuChuoiCuaHang(storeId: string) {
         const thang = moment().month();
         const nam = moment().year();
-        const cuaHangCha = await this.cuaHangModel.findOne({ _id: storeId, isRoot: true });
+        const cuaHangCha = await this.cuaHangModel.findOne({ userId: storeId, isRoot: true });
         if (!cuaHangCha) {
             throw ErrorDataDto.BadRequest("NOT_IS_ROOT");
         }
@@ -262,9 +280,9 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
             },
             {
                 $group: {
-                    _id: { day: "$day", date: "$date" },
+                    _id: "$date",
                     day: { $first: "$day" },
-                    date: { $date: "$date" },
+                    date: { $first: "$date" },
                     total: {
                         $sum: {
                             $multiply: ["$quantity", "$price"],
@@ -273,7 +291,6 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
                 },
             },
         ]);
-
         const nhapKho = await this.lichSuKhoHangModel.aggregate([
             {
                 $match: {
@@ -285,9 +302,9 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
             },
             {
                 $group: {
-                    _id: { day: "$day", date: "$date" },
+                    _id: "$date",
                     day: { $first: "$day" },
-                    date: { $date: "$date" },
+                    date: { $first: "$date" },
                     total: {
                         $sum: {
                             $multiply: ["$quantity", "$price"],
@@ -318,11 +335,24 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
             });
         });
         const label = [];
-        const total = [];
-        result.forEach(el => {
-            label.push(el.date);
-            total.push(el.total);
-        });
-        return { label, total };
+        const value = [];
+        const dt = new Date();
+        const month = dt.getMonth();
+        const year = dt.getFullYear();
+        const daysInMonth = new Date(year, month, 0).getDate();
+        for (let i = 0; i < daysInMonth; i++) {
+            const lb = i;
+            let vl = 0;
+            result.forEach(el => {
+                if (i === el.day) {
+                    vl = el.total;
+                } else {
+                    vl = 0;
+                }
+            });
+            label.push(lb);
+            value.push(vl);
+        }
+        return { label, value, title: `Doanh thu chuoi cua hang thang ${month + 1}` };
     }
 }
