@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Res } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Res } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { ResponseDto } from "src/common/dto/response/response.dto";
 import { NhapKhoDto } from "./dto/nhap-kho.dto";
@@ -69,5 +69,15 @@ export class KhoSanPhamController {
     ) {
         const data = await this.khoSanPhamService.doanhThuChuoiCuaHang(storeId);
         return data;
+    }
+
+    @Delete("product/:productId/store/:storeId/user/:userId")
+    async deleteChuoiCuaHang(
+        @Param("productId") productId: string,
+        @Param("storeId") storeId: string,
+        @Param("userId") userId: string,
+    ) {
+        const data = await this.khoSanPhamService.deleteSanPhamTrongCuaHang(productId, storeId, userId);
+        return ResponseDto.create(data);
     }
 }

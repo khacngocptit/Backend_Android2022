@@ -355,4 +355,22 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
         }
         return { label, value, title: `Doanh thu chuoi cua hang thang ${month + 1}` };
     }
+
+    async deleteSanPhamTrongCuaHang(productId: string, storeId: string, userId: string) {
+        const root = await this.cuaHangModel.findOne({ isRoot: true, userId });
+        const data = await this.khoSanPhamModel.findOneAndDelete({ productId, storeId });
+        const quantity = data.quantity;
+        await this.khoSanPhamModel.findOneAndUpdate(
+            {
+                storeId: root._id,
+                productId,
+            },
+            {
+                $inc: {
+                    quantity: quantity,
+                },
+            }
+        );
+        return null;
+    }
 }
