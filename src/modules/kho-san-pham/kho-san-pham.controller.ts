@@ -55,14 +55,6 @@ export class KhoSanPhamController {
         return data;
     }
 
-    @Get("doanh-thu/cua-hang/:storeId/thang/:thang/nam/:nam")
-    async doanhThuThangCuaHang(
-        @Param("storeId") storeId: string
-    ) {
-        const data = await this.khoSanPhamService.doanhThuNgayTrongThangStore(storeId);
-        return data;
-    }
-
     @Get("doanh-thu/chuoi-cua-hang/:userId")
     async doanhThuChuoiCuaHangTheoNgay(
         @Param("userId") storeId: string

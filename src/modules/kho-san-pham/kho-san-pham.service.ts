@@ -11,6 +11,7 @@ import { KhoSanPham, KhoSanPhamDocument } from "./entities/kho-san-pham.entity";
 import { LichSuKhoHang, LichSuKhoHangDocument } from "./entities/lich-su-kho.entity";
 import * as bluebird from "bluebird";
 import * as moment from "moment";
+import { compareSync } from "bcryptjs";
 
 @Injectable()
 export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
@@ -206,22 +207,17 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
         ]);
         const label = [];
         const value = [];
-
-
-        listStore.forEach(s => {
+        listStore.forEach((s, i) => {
+            const f = doanhThu.find(el => s._id.toString().localeCompare(el.storeId) === 0);
             let cuaHang = "";
             let vl = 0;
-            doanhThu.forEach((el, index) => {
-                if (s._id.toString().localeCompare(el.storeId) === 0) {
-                    cuaHang = s.name;
-                    vl = el.total;
-                } else {
-                    cuaHang = s.name;
-                    vl = 0;
-                }
-            });
-            label.push(cuaHang);
-            value.push(vl);
+            if (f) {
+                cuaHang = s.name;
+                vl = f.total;
+                label.push(cuaHang);
+                value.push(vl);
+            }
+
         });
 
 
@@ -230,31 +226,6 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
             value,
             title: `Doanh thu cac cua hang trong chuoi thang ${thang + 1}`,
         };
-    }
-
-    async doanhThuNgayTrongThangStore(storeId: string) {
-        const thang = moment().month();
-        const nam = moment().year();
-        const data = await this.lichSuKhoHangModel.aggregate([
-            {
-                $match: {
-                    storeId,
-                    month: thang,
-                    year: nam,
-                    isExport: true,
-                },
-            },
-            {
-                _id: { storeId: "$storeId", date: "$date" },
-                date: { $first: "$date" },
-                total: {
-                    $sum: {
-                        $multiply: ["$quantity", "$price"],
-                    },
-                },
-            },
-        ]);
-        return data;
     }
 
     async doanhThuChuoiCuaHang(storeId: string) {
@@ -291,65 +262,25 @@ export class KhoSanPhamService extends MongoRepository<KhoSanPhamDocument>{
                 },
             },
         ]);
-        const nhapKho = await this.lichSuKhoHangModel.aggregate([
-            {
-                $match: {
-                    isExport: { $ne: true },
-                    storeId: { $in: listStore },
-                    month: thang,
-                    year: nam,
-                },
-            },
-            {
-                $group: {
-                    _id: "$date",
-                    day: { $first: "$day" },
-                    date: { $first: "$date" },
-                    total: {
-                        $sum: {
-                            $multiply: ["$quantity", "$price"],
-                        },
-                    },
-                },
-            },
-        ]);
         const result = [];
-        for (let i = 0; i < xuatKho.length; i++) {
-            for (let j = 0; j < nhapKho.length; j++) {
-                if (xuatKho[i].day === nhapKho[j].day) {
-                    const el = {
-                        date: xuatKho[i].date,
-                        day: xuatKho[i].day,
-                        total: xuatKho[i].total - nhapKho[i].total,
-                    };
-                    result.push(el);
-                    xuatKho.splice(i, 1);
-                }
-            }
-        }
         xuatKho.forEach(el => {
             result.push({
-                date: el.date,
                 day: el.day,
                 total: el.total,
             });
         });
+        const res = Array.from(result.reduce(
+            (m, { day, total }) => m.set(day, (m.get(day) || 0) + total), new Map
+        ), ([day, total]) => ({ day, total }));
         const label = [];
         const value = [];
         const dt = new Date();
         const month = dt.getMonth();
         const year = dt.getFullYear();
         const daysInMonth = new Date(year, month, 0).getDate();
-        for (let i = 0; i < daysInMonth; i++) {
+        for (let i = 1; i < daysInMonth + 1; i++) {
             const lb = i;
-            let vl = 0;
-            result.forEach(el => {
-                if (i === el.day) {
-                    vl = el.total;
-                } else {
-                    vl = 0;
-                }
-            });
+            const vl = res.find(el => el.day === i)?.total || 0;
             label.push(lb);
             value.push(vl);
         }
